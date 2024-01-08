@@ -1,10 +1,15 @@
 const mongoose = require('mongoose')
-const dotenv =require('dotenv')
+const dotenv = require('dotenv')
 dotenv.config()
 
 console.log(process.env[process.env.ENV + "_DB_URL"]);
 
-mongoose.connect(process.env[process.env.ENV + "_DB_URL"])
+
+if (process.env.ENV == 'TEST') {
+    mongoose.connect(process.env[process.env.ENV + "_DB_URL"])
+} else {
+    mongoose.connect(process.env[process.env.ENV + "_DB_URL"])
+}
 
 const connection = mongoose.connection
 
