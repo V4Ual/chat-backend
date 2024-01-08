@@ -11,4 +11,9 @@ userRoute.post('/create',allValidator(userValidator.userCreate),  async(req,res)
     res.send(result);
 })
 
+
+userRoute.post('/login', async (req, res) => {
+    const result = await userController.login(req, res)
+    res.send(result)
+})
 module.exports = userRoute
