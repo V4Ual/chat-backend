@@ -16,4 +16,9 @@ userRoute.post('/login', async (req, res) => {
     const result = await userController.login(req, res)
     res.send(result)
 })
+
+userRoute.get('/', async (req, res) => {
+    const result = await userController.searchUser(req, res)
+    res.send(result)
+})
 module.exports = userRoute
