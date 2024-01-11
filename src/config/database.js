@@ -26,7 +26,9 @@ connection.on('disconnected', () => {
 });
 
 let db = {
-    users: require('../models/user.model')
+    users: require('../models/user.model'),
+    room: require('../models/room.model'),
+    chatMessage: require('../models/chat.model')
 }
 
 
