@@ -10,7 +10,7 @@ class Responses {
         res.status(500).json({
             statusCode:500,
             message:msg,
-            data: {}
+            data: err
 
         })
     }

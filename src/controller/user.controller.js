@@ -41,13 +41,12 @@ class UserController {
             const { email, password } = req.body;
 
 
-            console.log(req.body)
             const user = await db.users.findOne({
                 email: email,
             });
             const passwordMatch = await bcrypt.compare(password, user.password);
 
-            if (passwordMatch) {
+            if (passwordMatch && user) {
                 const token = jwtToken({ email, id: user._id })
                 const userDataExtract = jsonToString(user)
                 userDataExtract.token = token
@@ -61,6 +60,27 @@ class UserController {
             return responses.failResponses(res, 'An error occurred during login')
         }
     };
+
+
+    searchUser = async (req, res) => {
+        const { search } = req.query
+
+        const findUser = await db.users.find({
+            $or: [
+                { name: { $regex: new RegExp(search, 'i') } },
+                { email: { $regex: new RegExp(search, 'i') }, }
+
+            ]
+        })
+
+        console.log(findUser);
+
+        if (findUser) {
+            return responses.successResponses(res, 'Search User', findUser, false)
+        } else {
+            return responses.failResponses(res, 'Fail To request')
+        }
+    }
 }
 
 
