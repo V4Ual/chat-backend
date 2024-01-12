@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "start": "nodemon ./bin/www",
+    "test": "mocha --timeout 10000 ./src/test/*.test.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "joi": "^17.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.0.3",
+    "node-cron": "^3.0.3",
+    "save-dev": "^0.0.1-security"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.4.0",
+    "mocha": "^10.2.0"
+  }
+}
