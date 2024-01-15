@@ -10,7 +10,11 @@ class UserController {
 
 
     createUser = async (req, res) => {
-        const { name, email, password, phoneNumber } = req.body
+        const { name, email, password, phoneNumber,confirmPassword } = req.body
+
+        if(confirmPassword !== password){
+            return responses.failResponses(res,'Password Doest mach')
+        }
 
         const retrieveData = {
             name: name ? name : "",

@@ -4,13 +4,15 @@ const chatController = new ChatController()
 
 chatRoutes.post('/message', async (req, res) => {
     const result = await chatController.createMessage(req, res)
-    res.send(result)
+     res.send(result)
 })
 
 chatRoutes.get('/:chatId', async (req, res) => {
     const result = await chatController.getChatMessage(req, res)
-    res.send(result)
+    return result
 })
+
+
 
 
 module.exports = chatRoutes

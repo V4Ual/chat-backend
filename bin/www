@@ -1,6 +1,7 @@
 const app = require('../src/server')
 let debug = require('debug')
 let http = require('http');
+const socket = require('socket.io')
 // require('../src/config/database')
 
 
@@ -8,6 +9,10 @@ const port = portNormalize(process.env[process.env.ENV + '_PORT']);
 app.set('port', port)
 
 let server = http.createServer(app)
+const io = socket(server, { cors: { origin: "*" } });
+require("../src/chat/chat")(io);
+
+
 
 server.listen(port)
 server.on("error",onError)
