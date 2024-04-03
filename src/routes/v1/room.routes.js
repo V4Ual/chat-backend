@@ -1,6 +1,6 @@
 const roomRoutes = require('express').Router()
-const RoomController = require('../controller/room.controller')
-const roomController = new RoomController()
+const roomModule = require('../../controller')
+const roomController = new roomModule.roomCtr()
 
 roomRoutes.post('/room-create', async (req, res) => {
     let result = await roomController.createRoom(req, res)
@@ -8,8 +8,8 @@ roomRoutes.post('/room-create', async (req, res) => {
 })
 
 
-roomRoutes.get('/user-list/:usersId', async(req,res)=>{
-    let result = await roomController.getUserList(req,res)
+roomRoutes.get('/user-list/:usersId', async (req, res) => {
+    let result = await roomController.getUserList(req, res)
     return result
 })
 

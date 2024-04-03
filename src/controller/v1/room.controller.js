@@ -1,5 +1,5 @@
-const db = require("../config/database");
-const { successResponses, failResponses } = require("../responses/response");
+const db = require("../../config/database");
+const { successResponses, failResponses } = require("../../responses/response");
 let ObjectId = require("mongoose").Types.ObjectId;
 
 class RoomController {

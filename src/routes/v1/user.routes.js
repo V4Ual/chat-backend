@@ -1,0 +1,24 @@
+let userRoute = require('express').Router()
+// let userRoute = express.Router()
+const userModule = require('../../controller')
+const userValidator = require("../../validation/user.validatiaon")
+const allValidator = require('../../middleware/validator')
+const auth = require('../../services/auth.service')
+const userController = new userModule.userCtr()
+
+
+userRoute.post('/create', allValidator(userValidator.userCreate), async (req, res) => {
+    const result = await userController.createUser(req, res)
+    res.status(result.statusCode).send(result);
+})
+
+userRoute.post('/login', async (req, res) => {
+    const result = await userController.login(req, res)
+    res.send(result)
+})
+
+userRoute.get('/', auth, async (req, res) => {
+    const result = await userController.searchUser(req, res)
+    res.send(result)
+})
+module.exports = userRoute

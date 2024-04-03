@@ -2,43 +2,42 @@ const successResponses = (msg, data) => {
     return {
         statusCode: 200,
         responseMessage: msg,
-        data: data
-    }
-}
+        data: data,
+    };
+};
 const failResponses = (msg, data) => {
     return {
         statusCode: 500,
         responseMessage: msg,
-        data: {}
-    }
-}
+        data: {},
+    };
+};
 const unauthorizedResponses = (msg, data) => {
     return {
         statusCode: 401,
         message: msg,
-        data: {}
-    }
-}
+        data: {},
+    };
+};
 const notFoundResponses = (msg, data) => {
     return {
         statusCode: 404,
         message: msg,
-        err: err
-    }
-}
+        err: err,
+    };
+};
 const duplicateResponses = (msg, data) => {
     return {
         statusCode: 409,
         message: msg,
-        data: {}
-    }
-}
-
+        data: {},
+    };
+};
 
 module.exports = {
     successResponses,
     failResponses,
     unauthorizedResponses,
     notFoundResponses,
-    duplicateResponses
-}
+    duplicateResponses,
+};

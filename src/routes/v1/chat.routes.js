@@ -1,6 +1,6 @@
 const chatRoutes = require('express').Router()
-const ChatController = require('../controller/chat.controller')
-const chatController = new ChatController()
+const chatModule = require('../../controller')
+const chatController = new chatModule.chatCtr()
 
 chatRoutes.post('/message', async (req, res) => {
     const result = await chatController.createMessage(req, res)
