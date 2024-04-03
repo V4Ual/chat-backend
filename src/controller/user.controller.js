@@ -1,16 +1,16 @@
 const db = require("../config/database")
-const Responses = require('../responses/responses')
-const responses = new Responses();
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken');
 const { jsonToString, jwtToken } = require("../services/extraService");
+const { duplicateResponses, failResponses } = require("../responses/response");
 
 
 class UserController {
-
-
     createUser = async (req, res) => {
-        const { name, email, password, phoneNumber } = req.body
+        const { name, email, password, phoneNumber, confirmPassword } = req.body
+
+        if (confirmPassword !== password) {
+            return responses.failResponses(res, 'Password Doest mach')
+        }
 
         const retrieveData = {
             name: name ? name : "",
@@ -22,13 +22,13 @@ class UserController {
             email: email,
         });
         if (user) {
-            return responses.duplicateResponses(res, "Email Already Exit")
+            return duplicateResponses(res, "Email Already Exit")
         } else {
             const createUser = await db.users.create(retrieveData)
             if (createUser) {
-                return responses.successResponses(res, 'Create New User Successfully', createUser, true)
+                return successResponses('Create New User Successfully', createUser)
             } else {
-                return responses.failResponses(res, "Fail To Create New User")
+                return failResponses("Fail To Create New User", {})
             }
         }
 
@@ -50,21 +50,20 @@ class UserController {
                 const token = jwtToken({ email, id: user._id })
                 const userDataExtract = jsonToString(user)
                 userDataExtract.token = token
-                return responses.successResponses(res, 'Login Successfully', userDataExtract)
+                return successResponses(res, 'Login Successfully', userDataExtract)
 
             } else {
-                return responses.unauthorizedResponses(res, 'Unauthorized User')
+                return unauthorizedResponses('Unauthorized User', {})
             }
 
         } catch (error) {
-            return responses.failResponses(res, 'An error occurred during login')
+            return failResponses('An error occurred during login', {})
         }
     };
 
 
     searchUser = async (req, res) => {
         const { search } = req.query
-
         const findUser = await db.users.find({
             $or: [
                 { name: { $regex: new RegExp(search, 'i') } },
@@ -72,13 +71,10 @@ class UserController {
 
             ]
         })
-
-        console.log(findUser);
-
         if (findUser) {
-            return responses.successResponses(res, 'Search User', findUser, false)
+            return successResponses('Search User', findUser)
         } else {
-            return responses.failResponses(res, 'Fail To request')
+            return failResponses('Fail To request')
         }
     }
 }

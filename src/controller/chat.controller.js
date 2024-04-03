@@ -1,8 +1,6 @@
-const db = require("../config/database")
+const db = require("../config/database");
+const { successResponses, failResponses } = require("../responses/response");
 let ObjectId = require('mongoose').Types.ObjectId;
-const Responses = require("../responses/responses")
-
-const responses = new Responses()
 
 class ChatMessage {
     constructor() { }
@@ -18,14 +16,13 @@ class ChatMessage {
             }
             const messageC = await db.chatMessage.create(messageCreate)
             if (messageC) {
-                return responses.successResponses(res, 'Create Message', messageC, true)
+                return successResponses("Send message successfully", messageC)
             } else {
-
-                return responses.failResponses(res, 'fail To Message')
+                return failResponses('Send Message Fail', {})
             }
 
         } catch (error) {
-            return responses.failResponses(res, "Internal Server Error")
+            return failResponses(res, "Internal Server Error")
         }
 
     }
@@ -33,15 +30,14 @@ class ChatMessage {
     getChatMessage = async (req, res) => {
         try {
             const { chatId } = req.params
-            // return chatId
             const getChatMessage = await db.chatMessage.find({ chatId: new ObjectId(chatId) })
             if (getChatMessage) {
-                return responses.successResponses(res, 'Get Chat Message Successfully', getChatMessage, false)
+                return successResponses('Get Chat Message Successfully', getChatMessage)
             } else {
-                return responses.failResponses(res, 'Get Chat Fail')
+                return failResponses('Get Chat Fail')
             }
         } catch (error) {
-            return responses.failResponses(res, "Internal Server Error", error)
+            return failResponses("Internal Server Error")
         }
 
     }

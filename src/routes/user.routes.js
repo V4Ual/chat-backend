@@ -3,6 +3,7 @@ let userRoute = require('express').Router()
 const UserController = require('../controller/user.controller')
 const userValidator = require("../validation/user.validatiaon")
 const allValidator = require('../middleware/validator')
+const auth =  require('../services/auth.service')
 const userController = new UserController()
 
 
@@ -17,7 +18,7 @@ userRoute.post('/login', async (req, res) => {
     res.send(result)
 })
 
-userRoute.get('/', async (req, res) => {
+userRoute.get('/',auth, async (req, res) => {
     const result = await userController.searchUser(req, res)
     res.send(result)
 })
