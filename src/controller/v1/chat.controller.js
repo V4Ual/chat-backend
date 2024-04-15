@@ -1,5 +1,5 @@
 const db = require("../../config/database");
-const { successResponses, failResponses } = require("../../responses/response");
+const { successResponses, badRequest } = require("../../responses/response");
 let ObjectId = require('mongoose').Types.ObjectId;
 
 class ChatMessage {
@@ -18,11 +18,11 @@ class ChatMessage {
             if (messageC) {
                 return successResponses("Send message successfully", messageC)
             } else {
-                return failResponses('Send Message Fail', {})
+                return badRequest('Send Message Fail', {})
             }
 
         } catch (error) {
-            return failResponses(res, "Internal Server Error")
+            return badRequest(res, "Internal Server Error")
         }
 
     }
@@ -34,10 +34,10 @@ class ChatMessage {
             if (getChatMessage) {
                 return successResponses('Get Chat Message Successfully', getChatMessage)
             } else {
-                return failResponses('Get Chat Fail')
+                return badRequest('Get Chat Fail')
             }
         } catch (error) {
-            return failResponses("Internal Server Error")
+            return badRequest("Internal Server Error")
         }
 
     }

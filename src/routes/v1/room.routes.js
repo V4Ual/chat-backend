@@ -10,7 +10,7 @@ roomRoutes.post('/room-create', async (req, res) => {
 
 roomRoutes.get('/user-list/:usersId', async (req, res) => {
     let result = await roomController.getUserList(req, res)
-    return result
+    res.status(result.statusCode).send(result)
 })
 
 module.exports = roomRoutes

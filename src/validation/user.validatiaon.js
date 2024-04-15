@@ -19,6 +19,7 @@ const userValidation = {
       .message(
         "Password must be at least 8 characters long and include at least one alphabet character, one digit, and one special symbol (@$!%*?&)."
       ),
+    profile_pic: Joi.string()
   }),
 };
 

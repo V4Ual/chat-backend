@@ -17,7 +17,12 @@ const User = new Schema({
     phoneNumber: {
         type: Number,
         require: true
+    },
+    profilePic: {
+        type: String,
+        require: false
     }
+
 }, {
     timestamps: true
 })

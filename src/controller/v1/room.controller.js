@@ -1,5 +1,5 @@
 const db = require("../../config/database");
-const { successResponses, failResponses } = require("../../responses/response");
+const { successResponses, badRequest } = require("../../responses/response");
 let ObjectId = require("mongoose").Types.ObjectId;
 
 class RoomController {
@@ -12,7 +12,7 @@ class RoomController {
     if (roomCreate) {
       return successResponses(res, "Create Room Successfully", roomCreate, true);
     } else {
-      return failResponses(res, "Fail to Create");
+      return badRequest(res, "Fail to Create");
     }
   };
 
@@ -47,11 +47,12 @@ class RoomController {
         $unwind: "$userDetails",
       },
     ]);
+    console.log(getUser);
 
     if (getUser) {
       return successResponses("Get User Match Successfully", getUser);
     } else {
-      return failResponses("Fail to Create");
+      return badRequest("Fail to Create");
     }
   };
 }

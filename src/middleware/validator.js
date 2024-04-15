@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { failResponses } = require("../responses/response");
+const { badRequest } = require("../responses/response");
 
 
 const validator = (schema) => (req, res, next) => {
@@ -7,7 +7,7 @@ const validator = (schema) => (req, res, next) => {
     const validationResult = schema.validate(req.body);
     if (validationResult.error) {
       const errorMessage = validationResult.error.message;
-      return failResponses(res, errorMessage, validationResult)
+      return badRequest(res, errorMessage, validationResult)
     }
     next();
 };

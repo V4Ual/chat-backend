@@ -3,27 +3,41 @@ const bcrypt = require("bcrypt");
 const { jsonToString, jwtToken } = require("../../services/extraService");
 const {
   duplicateResponses,
-  failResponses,
+  badRequest,
   successResponses,
+  unauthorized
+  ,
 } = require("../../responses/response");
+const { createPhoto } = require("../../services/image.service");
 
 class UserController {
   constructor() { }
   createUser = async (req, res) => {
     try {
-      const { name, email, password, phoneNumber, confirmPassword } = req.body;
 
+      const {
+        firstName,
+        email,
+        password,
+        phoneNumber,
+        confirmPassword
+      } = req.body;
+
+      const file = req.file
+      console.log(file);
+      const fileName = Date.now()
       if (confirmPassword !== password) {
-        return failResponses(res, "Password Doest mach");
+        return badRequest("confirm password does not match");
       }
 
       const retrieveData = {
-        name: name ? name : "",
+        name: firstName ? firstName : "",
         email: email ? email : "",
         password: password ? password : "",
         phoneNumber: phoneNumber ? phoneNumber : "",
       };
 
+      console.log(retrieveData);
       const user = await db.users.findOne({
         email: email,
       });
@@ -32,37 +46,44 @@ class UserController {
       } else {
         const createUser = await db.users.create(retrieveData);
         if (createUser) {
+          if (file) {
+            retrieveData.profilePic = `${fileName}.png`
+            await createPhoto(file.buffer, fileName)
+          }
           return successResponses("Create New User Successfully", createUser);
         } else {
-          return failResponses("Fail To Create New User", {});
+          return badRequest("Fail To Create New User", {});
         }
       }
     } catch (error) {
       const errorMessage = typeof error === "string" ? error : error.message;
-      return failResponses("Something went wrong", errorMessage);
+      return badRequest("Something went wrong", errorMessage);
     }
   };
 
   login = async (req, res) => {
-    try {
-      const { email, password } = req.body;
+    // try {
+    const { email, password } = req.body;
 
-      const user = await db.users.findOne({
-        email: email,
-      });
-      const passwordMatch = await bcrypt.compare(password, user.password);
-
-      if (passwordMatch && user) {
-        const token = jwtToken({ email, id: user._id });
-        const userDataExtract = jsonToString(user);
-        userDataExtract.token = token;
-        return successResponses(res, "Login Successfully", userDataExtract);
-      } else {
-        return unauthorizedResponses("Unauthorized User", {});
-      }
-    } catch (error) {
-      return failResponses("An error occurred during login", {});
+    const user = await db.users.findOne({
+      email: email,
+    });
+    console.log(user);
+    if (!user) {
+      return badRequest("User not fount this mail")
     }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordMatch && user) {
+      const token = jwtToken({ email, id: user._id });
+      user._doc.token = token;
+      return successResponses("Login Successfully", user);
+    } else {
+      return unauthorized("Unauthorized User", {});
+    }
+    // } catch (error) {
+    //   return badRequest("An error occurred during login", {});
+    // }
   };
 
   searchUser = async (req, res) => {
@@ -76,7 +97,7 @@ class UserController {
     if (findUser) {
       return successResponses("Search User", findUser);
     } else {
-      return failResponses("Fail To request");
+      return badRequest("Fail To request");
     }
   };
 }

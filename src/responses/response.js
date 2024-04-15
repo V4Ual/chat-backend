@@ -5,14 +5,14 @@ const successResponses = (msg, data) => {
         data: data,
     };
 };
-const failResponses = (msg, data) => {
+const badRequest = (msg, data) => {
     return {
-        statusCode: 500,
+        statusCode: 400,
         responseMessage: msg,
         data: {},
     };
 };
-const unauthorizedResponses = (msg, data) => {
+const unauthorized = (msg, data) => {
     return {
         statusCode: 401,
         message: msg,
@@ -36,8 +36,8 @@ const duplicateResponses = (msg, data) => {
 
 module.exports = {
     successResponses,
-    failResponses,
-    unauthorizedResponses,
+    badRequest,
+    unauthorized,
     notFoundResponses,
     duplicateResponses,
 };
