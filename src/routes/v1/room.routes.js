@@ -1,5 +1,6 @@
 const roomRoutes = require('express').Router()
 const roomModule = require('../../controller')
+const { authService } = require('../../services/auth.service')
 const roomController = new roomModule.roomCtr()
 
 roomRoutes.post('/room-create', async (req, res) => {
@@ -8,7 +9,7 @@ roomRoutes.post('/room-create', async (req, res) => {
 })
 
 
-roomRoutes.get('/user-list/:usersId', async (req, res) => {
+roomRoutes.get('/user-list', authService, async (req, res) => {
     let result = await roomController.getUserList(req, res)
     res.status(result.statusCode).send(result)
 })

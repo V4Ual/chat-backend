@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { unauthorizedResponses } = require("../responses/response");
-
+const { unauthorized } = require("../responses/response");
 
 const verifyAuthToken = (request) => {
   const authToken = request.headers.authorization;
@@ -10,16 +9,15 @@ const verifyAuthToken = (request) => {
   if (!authToken) {
     verify = false;
     message = "token invalid";
+    return { verify, message };
   }
   const part = authToken.split(" ");
-  console.log(part);
   if (part.length != 2) {
     verify = false;
     message = "Token Error";
     return { verify, message };
   }
   const [scheme, token] = part;
-  console.log(token);
   if (!/^Bearer$/i.test(scheme)) {
     verify = false;
     message = "Token malformatted";
@@ -30,20 +28,22 @@ const verifyAuthToken = (request) => {
 };
 
 const authService = async (req, res, next) => {
-  try {
-    const { verify, message, token } = verifyAuthToken(req);
-    if (verify) {
-      const verifyUser = await jwt.verify(token, process.env["LOCAL_" + process.env.JWT_TOKEN]);
-      console.log(verifyUser);
-      if (verifyUser) {
+  const { verify, message, token } = verifyAuthToken(req);
+  if (verify) {
+    await jwt.verify(
+      token,
+      process.env[process.env.ENV + "_JWT_TOKEN"],
+      async (err, token) => {
+        if (err) {
+          throw err;
+        }
+        req.headers.userData = token;
         next();
-      } else {
-        return unauthorizedResponses(res, "User Not Authenticated");
       }
-    }
-  } catch (error) {
-    return unauthorizedResponses(res, "User Not Authenticated");
+    );
+  } else {
+    return res.send(unauthorized("token invalidate"));
   }
 };
 
-module.exports = authService;
+module.exports = { authService };
