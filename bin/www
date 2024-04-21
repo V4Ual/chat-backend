@@ -2,7 +2,7 @@ const app = require("../src/server");
 let debug = require("debug");
 let http = require("http");
 const cors = require('cors')
-// const socket = require("socket.io");
+const socket = require("socket.io");
 // require('../src/config/database')
 
 const port = portNormalize(process.env[process.env.ENV + "_PORT"]);
@@ -13,11 +13,11 @@ let server = http.createServer(app);
 
 
 
-server.listen(port);
+server.listen(port, () => console.log('connection to '));
 server.on("error", onError);
 server.on("listening", onListening);
-// const io = socket(server, { cors: { origin: "*" } });
-// require("../src/chat/chat")(io);
+const io = socket(server, { cors: { origin: "*" } });
+require("../src/chat/chat")(io);
 
 function portNormalize(value) {
   let port = parseInt(value, 10);
