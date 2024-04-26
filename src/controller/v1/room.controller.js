@@ -22,6 +22,7 @@ class RoomController {
   };
 
   getUserList = async (req, res) => {
+    const { search } = req.query
     const userID = req.headers.userData.id;
 
     const getUser = await db.room.aggregate([
@@ -45,6 +46,10 @@ class RoomController {
                     { $ne: ["$_id", new ObjectId(userID)] },
                   ],
                 },
+                $or: [
+                  { name: { $regex: new RegExp(search, "i") } },
+                  { email: { $regex: new RegExp(search, "i") } },
+                ]
               },
             },
             {
