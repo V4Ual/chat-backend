@@ -92,6 +92,13 @@ class UserController {
         { name: { $regex: new RegExp(search, "i") } },
         { email: { $regex: new RegExp(search, "i") } },
       ],
+
+    },
+
+    );
+
+    findUser.map(user => {
+      user.profilePic = process.env[process.env.ENV + "_IMAGE_URL"] + user.profilePic
     });
     if (findUser) {
       return successResponses("Search User", findUser);

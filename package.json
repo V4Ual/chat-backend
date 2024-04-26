@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon ./bin/www",
+    "dev": "nodemon ./bin/www",
     "test": "mocha --timeout 10000 ./src/test/*.test.js"
   },
   "dependencies": {

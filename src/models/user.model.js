@@ -22,13 +22,18 @@ const User = new Schema(
         profilePic: {
             type: String,
             require: false,
-            require: false
+
         },
     },
     {
         timestamps: true,
     }
 );
+
+User.methods.getProfilePicUrl = function () {
+    // Assuming profilePic contains the URL of the profile picture directly
+    return "aas" + this.profilePic;
+};
 
 User.pre("save", async function (next) {
     try {
