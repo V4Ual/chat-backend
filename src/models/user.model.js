@@ -22,28 +22,19 @@ const User = new Schema(
         profilePic: {
             type: String,
             require: false,
+            get: obfuscate
 
         },
     },
     {
         timestamps: true,
+        toJSON: { getters: true }
     }
 );
 
-User.methods.getProfilePicUrl = function () {
-    // Assuming profilePic contains the URL of the profile picture directly
-    return "aas" + this.profilePic;
-};
-
-User.pre("save", async function (next) {
-    try {
-        const hashedPassword = await bcrypt.hash(this.password, 10);
-        this.password = hashedPassword;
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
+function obfuscate(profilePic) {
+    return process.env[process.env.ENV + '_IMAGE_URL'] + profilePic;
+}
 
 const user = connection.model("users", User);
 module.exports = user;
