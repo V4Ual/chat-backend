@@ -3,7 +3,7 @@ const { successResponses, badRequest } = require("../../responses/response");
 let ObjectId = require("mongoose").Types.ObjectId;
 
 class RoomController {
-  constructor() { }
+  constructor() {}
 
   createRoom = async (req, res) => {
     const { users } = req.body;
@@ -12,17 +12,14 @@ class RoomController {
 
     const roomCreate = db.room.create({ users });
     if (roomCreate) {
-      return successResponses(
-        "Create Room Successfully",
-        roomCreate
-      );
+      return successResponses("Create Room Successfully", roomCreate);
     } else {
       return badRequest("Fail to Create");
     }
   };
 
   getUserList = async (req, res) => {
-    const { search } = req.query
+    const { search } = req.query;
     const userID = req.headers.userData.id;
 
     const getUser = await db.room.aggregate([
@@ -49,14 +46,14 @@ class RoomController {
                 $or: [
                   { name: { $regex: new RegExp(search, "i") } },
                   { email: { $regex: new RegExp(search, "i") } },
-                ]
+                ],
               },
             },
             {
               $addFields: {
                 profilePic: {
                   $function: {
-                    body: 'function(profilePicFileName) { return "http://192.168.25.86:3001/public/"+ profilePicFileName }',
+                    body: `function(profilePicFileName) { return "${process.env.LOCAL_IMAGE_URL}"+ profilePicFileName }`,
                     args: ["$profilePic"],
                     lang: "js",
                   },
@@ -75,8 +72,18 @@ class RoomController {
     // const getUser = await db.users.findOne({ _id: new ObjectId(userID) })
     // console.log(getUser.profilePic);
 
+    const formateUser = getUser.map((item) => ({
+      // user: { ...item.userDetails, image: item.userDetails.profilePic },
+      user: item.userDetails,
+      lastMessage: "test",
+      lastMessageTime: "12:45 PM",
+      unreadCount: null,
+      messages: [],
+      roomId: item._id,
+    }));
+
     if (getUser) {
-      return successResponses("Get User Match Successfully", getUser);
+      return successResponses("Get User Match Successfully", formateUser);
     } else {
       return badRequest("Fail to Create");
     }
