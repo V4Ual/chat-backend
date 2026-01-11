@@ -1,6 +1,5 @@
-const routes = require("express").Router()
+const routes = require("express").Router();
 
-routes.use("/v1", require('./v1'))
+routes.use("/v1", require("./v1"));
 
-
-module.exports = routes
+module.exports = routes;

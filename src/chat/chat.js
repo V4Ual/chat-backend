@@ -1,24 +1,21 @@
+const socketStore = require("./socketStore");
 
-const userList = new Map()
 module.exports = function (io) {
-    io.on('connection', (socket) => {
-        // console.log(socket.id);
-        socket.on('user::connect', (data) => {
-            const { id } = data
-            console.log(data);
-            userList.set(id, socket.id)
-        })
+  socketStore.setIO(io);
 
-        socket.on('send::message', (data) => {
-            const { message, receiveId, senderId } = data
-            const socketId = userList.get(receiveId)
-            console.log(data);
-            console.log({ "receiver": socketId, "socketid::": socketId });
-            socket.to(socketId).emit("send::message", data)
-        })
+  io.on("connection", (socket) => {
+    socket.on("user::connect", ({ id }) => {
+      socketStore.userList.set(id, socket.id);
+      socket.emit("message", "connected");
+    });
 
-        console.log(userList);
-
-    })
-}
-
+    socket.on("disconnect", () => {
+      for (const [userId, socketId] of socketStore.userList.entries()) {
+        if (socketId === socket.id) {
+          socketStore.userList.delete(userId);
+          break;
+        }
+      }
+    });
+  });
+};
